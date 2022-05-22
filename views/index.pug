@@ -1,5 +1,53 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+      .album.py-5.bg-light
+        .container
+          a(href='/newwine')
+            button.btn.btn-md.btn-outline-secondary.m-1(type='button') New Wine
+          a(href='/wine/all/' + winetable.number)
+            button.btn.btn-md.btn-outline-secondary(type='button') View page as JSON
+        .py-2
+        .container
+            .row.row-cols-1.row-cols-sm-2.row-cols-md-3.g-3
+              each wine in winetable.content
+                .col
+                  .card.shadow-sm
+                      //svg.bd-placeholder-img.card-img-top(width='100%' height='225' xmlns='wine.svg' role='img' aria-label='Placeholder: Thumbnail' preserveAspectRatio='xMidYMid slice' focusable='false')
+                      img(src='/images/wine.svg' alt='wine' height='200' width='100%')
+                      hr
+                      .card-body
+                        p.card-title
+                          | Nom: #{wine.name}
+                        p.card-title
+                          | Région: #{wine.region}
+                        p.card-title
+                          | Année: #{wine.year}
+                        p.card-title
+                          | Pays: #{wine.country}
+                        .d-flex.justify-content-between.align-items-center
+                          .btn-group
+                            a(href='/wine/' + wine.id)
+                              button.btn.btn-sm.btn-outline-secondary(type='button') View
+                            a(href='/edit/' + wine.id)
+                              button.btn.btn-sm.btn-outline-secondary(type='button') Edit
+                            a(href='/wine/del/' + wine.id)
+                              button.btn.btn-sm.btn-outline-danger(type='button') Delete
+                            a(href='/wine/json/' + wine.id)
+                              button.btn.btn-sm.btn-outline-secondary(type='button') View as a Json
+
+        - var index = parseFloat(winetable.number)
+        nav(aria-label='...')
+        ul.pagination
+          li.page-item
+            a.page-link(href='/list/' + index - 1) Previous
+          - for (let i = 0; i <= winetable.totalPages - 1; i++) {
+          li.page-item
+            a.page-link(href='/list/' + i) #{i}
+          - }
+          li.page-item
+            a.page-link(href='/list/' + index + 1) Next
+
+
+
+

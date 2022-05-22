@@ -1,0 +1,25 @@
+extends layout
+
+block content
+    .container
+        .card.m-5
+            h5.card-header Update wine
+            .card-body
+                form.row.g-3
+                    .col-md-12
+                        label.form-label(for='inputEmail4') Nom
+                        input#inputEmail4.form-control(type='name' value=winetable.name)
+                    .col-12
+                        label.form-label(for='inputAddress2') Description
+                        input#inputAddress2.form-control(type='text' value=winetable.description)
+                    .col-md-6
+                        label.form-label(for='inputCity') Pays
+                        input#inputCity.form-control(type='text' value=winetable.country)
+                    .col-md-4
+                        label.form-label(for='inputState') Région
+                        input#inputState.form-control(type='text' value=winetable.region)
+                    .col-md-2
+                        label.form-label(for='inputZip') Année
+                        input#inputZip.form-control(type='text' value=winetable.year)
+                    .text-center
+                        button.btn.btn-primary(type='submit') Update
