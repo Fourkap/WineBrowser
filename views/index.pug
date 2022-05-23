@@ -37,6 +37,7 @@ block content
                               button.btn.btn-sm.btn-outline-secondary(type='button') View as a Json
 
             - var index = parseFloat(winetable.number)
+            - var final = parseFloat(winetable.totalPages) - 1;
             - var indexplus = index + 1
             - var indexmoins = index - 1
             - p1 = 5
@@ -77,6 +78,9 @@ block content
                           a.page-link(href='/list/' + indexplus)
                             | Next
                         endif
+                        li.page-item
+                          a.page-link(href='/list/' + final)
+                            | Last
 
 
 

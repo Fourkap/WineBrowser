@@ -101,9 +101,9 @@ router.post('/newwine', async function (req, res, next) {
     console.log("save " + fields.name + " " + fields.description + " " + fields.country + " " + fields.region + " " + fields.year);
     const wineapi = axios.post('http://127.0.0.1:8889/api/wine/add', userJson.fields);
 
-  var lastid = await getLastId();
-  var parseId = parseInt(lastid);
-  var stringId = parseId + 1;
+  var lastid = await getNextId();
+  var parseId = parseInt(lastid) + 1;
+  var stringId = parseId;
   var id = stringId.toString();
   console.log(id);
   var name = fields.name;
@@ -133,9 +133,9 @@ router.post('/newwine', async function (req, res, next) {
   })
 });
 
-async function getLastId() {
-  const wineapi = await axios.get('http://127.0.0.1:8889/api/wine/getlastid');
-  var id = wineapi.data.id;
+async function getNextId() {
+  const wineapi = await axios.get('http://127.0.0.1:8889/api/wine/getnextid');
+  var id = wineapi.data;
   return id;
 }
 
