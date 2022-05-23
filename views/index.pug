@@ -37,6 +37,7 @@ block content
                               button.btn.btn-sm.btn-outline-secondary(type='button') View as a Json
 
             - var index = parseFloat(winetable.number)
+            - var first = parseFloat(winetable.first);
             - var final = parseFloat(winetable.totalPages) - 1;
             - var indexplus = index + 1
             - var indexmoins = index - 1
@@ -51,6 +52,9 @@ block content
             p(style="text-align:center;")
               nav(aria-label='...')
                     ul.pagination
+                      li.page-item
+                         a.page-link(href='/list/0')
+                          | First
                       if index == 0
                         li.page-item.disabled
                           a.page-link(href='/list/' + index)
