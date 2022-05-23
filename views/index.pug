@@ -52,14 +52,14 @@ block content
             p(style="text-align:center;")
               nav(aria-label='...')
                     ul.pagination
-                      li.page-item
-                         a.page-link(href='/list/0')
-                          | First
                       if index == 0
                         li.page-item.disabled
                           a.page-link(href='/list/' + index)
                             | Previous
                       else
+                        li.page-item
+                          a.page-link(href='/list/0')
+                            | First
                         li.page-item
                           a.page-link(href='/list/' + indexmoins)
                             | Previous
