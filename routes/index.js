@@ -2,6 +2,7 @@ var express = require('express');
 const axios = require("axios");
 var router = express.Router();
 const bodyParser = require('body-parser');
+var formidable = require('formidable');
 
 router.get('/', function(req, res, next) {
   res.redirect('/list/0');
@@ -15,9 +16,6 @@ router.get('/list/:id', async function (req, res, next) {
   res.render('index', {title: 'Express', winetable: wineapi.data});
 });
 
-router.get('/newwine', function (req, res, next) {
-  res.render('newwine', {title: 'Add new wine'});
-});
 
 router.get('/kibana', function(req, res, next) {
   res.render('kibana', { title: 'Express' });
@@ -64,6 +62,40 @@ router.delete("/wine/:id", async (req, res) => {
   const wineapi = await axios.delete('http://127.0.0.1:8889/api/wine/' + id);
   console.log(wineapi);
   await res.json("le vin "+id+" a ete supprime");
+});
+
+router.get('/newwine', function (req, res, next) {
+  res.render('newwine', {title: 'Add new wine'});
+});
+
+router.post('/newwine', function  (req, res, next) {
+  let userJson = {};
+  var form = new formidable.IncomingForm();
+  form.parse(req, function (err, fields, files) {
+    var values = [
+      [fields.name, fields.description, fields.country, fields.region, fields.year],
+    ];
+    userJson = {fields};
+    console.log(userJson.fields);
+    console.log("save " + fields.name + " " + fields.description + " " + fields.country + " " + fields.region + " " + fields.year);
+    const wineapi = axios.post('http://127.0.0.1:8889/api/wine/add', userJson.fields);
+    res.redirect('/');
+})
+});
+
+router.post('/updatewine', function  (req, res, next) {
+  let userJson = {};
+  var form = new formidable.IncomingForm();
+  form.parse(req, function (err, fields, files) {
+    var values = [
+      [fields.name, fields.description, fields.country, fields.region, fields.year, fields.id],
+    ];
+    userJson = {fields};
+    console.log(userJson.fields);
+    console.log("save " + fields.name + " " + fields.description + " " + fields.country + " " + fields.region + " " + fields.year);
+    const wineapi = axios.put('http://127.0.0.1:8889/api/wine/' + fields.id, userJson.fields);
+    res.redirect('/edit/' + fields.id);
+  })
 });
 
 router.post("/wine/add", async (req, res) => {

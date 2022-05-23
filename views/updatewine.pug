@@ -5,21 +5,22 @@ block content
         .card.m-5
             h5.card-header Update wine
             .card-body
-                form.row.g-3
+                form.row.g-3(action='/updatewine', method='POST', enctype='multipart/form-data')
                     .col-md-12
-                        label.form-label(for='inputEmail4') Nom
-                        input#inputEmail4.form-control(type='name' value=winetable.name)
+                        label.form-label(for='name') Nom
+                        input.form-control(type='text' ,name = 'name', value=winetable.name, id='name')
                     .col-12
-                        label.form-label(for='inputAddress2') Description
-                        input#inputAddress2.form-control(type='text' value=winetable.description)
+                        label.form-label(for='description') Description
+                        input.form-control(type='text', name='description', value=winetable.description, id='description')
                     .col-md-6
-                        label.form-label(for='inputCity') Pays
-                        input#inputCity.form-control(type='text' value=winetable.country)
+                        label.form-label(for='country') Pays
+                        input.form-control(type='text' , name='country', value=winetable.country, id='country')
                     .col-md-4
-                        label.form-label(for='inputState') Région
-                        input#inputState.form-control(type='text' value=winetable.region)
+                        label.form-label(for='region') Région
+                        input.form-control(type='text' , name='region', value=winetable.region, id='region')
                     .col-md-2
-                        label.form-label(for='inputZip') Année
-                        input#inputZip.form-control(type='text' value=winetable.year)
+                        label.form-label(for='year') Année
+                        input.form-control(type='text', name='year', value=winetable.year, id='year')
+                        input.form-control(type='hidden' name='id' value=winetable.id)
                     .text-center
                         button.btn.btn-primary(type='submit') Update

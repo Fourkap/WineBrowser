@@ -36,17 +36,47 @@ block content
                             a(href='/wine/json/' + wine.id)
                               button.btn.btn-sm.btn-outline-secondary(type='button') View as a Json
 
-        - var index = parseFloat(winetable.number)
-        nav(aria-label='...')
-        ul.pagination
-          li.page-item
-            a.page-link(href='/list/' + index - 1) Previous
-          - for (let i = 0; i <= winetable.totalPages - 1; i++) {
-          li.page-item
-            a.page-link(href='/list/' + i) #{i}
-          - }
-          li.page-item
-            a.page-link(href='/list/' + index + 1) Next
+            - var index = parseFloat(winetable.number)
+            - var indexplus = index + 1
+            - var indexmoins = index - 1
+            - p1 = 5
+            - p2 = 5
+            if index < 5
+              - p1 = index;
+            endif
+            if index > winetable.totalPages - 5
+                    - p2 = (winetable.totalPages - index);
+            endif
+            p(style="text-align:center;")
+              nav(aria-label='...')
+                    ul.pagination
+                      if index == 0
+                        li.page-item.disabled
+                          a.page-link(href='/list/' + index)
+                            | Previous
+                      else
+                        li.page-item
+                          a.page-link(href='/list/' + indexmoins)
+                            | Previous
+                        endif
+                      - for (let i = index - p1; i < index + p2; i++) {
+                      if i == index
+                        li.page-item.active
+                          a.page-link(href='/list/' + i) #{i}
+                      endif
+                      if i != index
+                        li.page-item
+                          a.page-link(href='/list/' + i) #{i}
+                      - }
+                      if index == winetable.totalPages - 1
+                        li.page-item.disabled
+                          a.page-link(href='/list/' + index)
+                            | Next
+                      else
+                        li.page-item
+                          a.page-link(href='/list/' + indexplus)
+                            | Next
+                        endif
 
 
 
