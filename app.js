@@ -4,6 +4,10 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+const {Client} = require('@elastic/elasticsearch')
+const client = new Client({node: 'http://localhost:9200'})
+
+module.exports = client;
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');

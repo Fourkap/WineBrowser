@@ -4,6 +4,12 @@ var router = express.Router();
 const bodyParser = require('body-parser');
 var formidable = require('formidable');
 
+const {Client} = require('@elastic/elasticsearch')
+const client = new Client({node: 'http://localhost:9200'})
+
+module.exports = client;
+var nom_index = "wine";
+
 router.get('/', function(req, res, next) {
   res.redirect('/list/0');
 });
@@ -54,7 +60,22 @@ router.get('/wine/all/:id', async (req, res) => {
 router.get('/wine/del/:id', async (req, res) => {
   const id = parseInt(req.params.id);
   const wineapi = await axios.delete('http://127.0.0.1:8889/api/wine/' + id);
-  res.redirect('/');
+
+
+  try {
+      await client.deleteByQuery({
+        index: nom_index,
+        body: {
+          query: {
+            match: {ID: id}
+          }
+        }
+      })
+      await client.indices.refresh({index: nom_index})
+    res.redirect('/');
+  } catch (error) {
+    res.send('Unable to delete data. Check syntax.')
+  }
 });
 
 router.delete("/wine/:id", async (req, res) => {
@@ -68,10 +89,10 @@ router.get('/newwine', function (req, res, next) {
   res.render('newwine', {title: 'Add new wine'});
 });
 
-router.post('/newwine', function  (req, res, next) {
+router.post('/newwine', async function (req, res, next) {
   let userJson = {};
   var form = new formidable.IncomingForm();
-  form.parse(req, function (err, fields, files) {
+  form.parse(req, async function (err, fields, files) {
     var values = [
       [fields.name, fields.description, fields.country, fields.region, fields.year],
     ];
@@ -79,14 +100,49 @@ router.post('/newwine', function  (req, res, next) {
     console.log(userJson.fields);
     console.log("save " + fields.name + " " + fields.description + " " + fields.country + " " + fields.region + " " + fields.year);
     const wineapi = axios.post('http://127.0.0.1:8889/api/wine/add', userJson.fields);
-    res.redirect('/');
-})
+
+  var lastid = await getLastId();
+  var parseId = parseInt(lastid);
+  var stringId = parseId + 1;
+  var id = stringId.toString();
+  console.log(id);
+  var name = fields.name;
+  var description = fields.description;
+  var country = fields.country;
+  var region = fields.region;
+  var year = fields.year;
+
+    try {
+        await client.index({
+          index: nom_index,
+
+          body: {
+            ID: id,
+            NAME: name,
+            DESCRIPTION: description,
+            COUNTRY: country,
+            REGION: region,
+            YEAR: year
+          }
+        })
+        await client.indices.refresh({index: nom_index})
+        res.redirect('/');
+    } catch (error) {
+      res.send('Unable to add data. Check syntax.')
+    }
+  })
 });
+
+async function getLastId() {
+  const wineapi = await axios.get('http://127.0.0.1:8889/api/wine/getlastid');
+  var id = wineapi.data.id;
+  return id;
+}
 
 router.post('/updatewine', function  (req, res, next) {
   let userJson = {};
   var form = new formidable.IncomingForm();
-  form.parse(req, function (err, fields, files) {
+  form.parse(req, async function (err, fields, files) {
     var values = [
       [fields.name, fields.description, fields.country, fields.region, fields.year, fields.id],
     ];
@@ -94,7 +150,48 @@ router.post('/updatewine', function  (req, res, next) {
     console.log(userJson.fields);
     console.log("save " + fields.name + " " + fields.description + " " + fields.country + " " + fields.region + " " + fields.year);
     const wineapi = axios.put('http://127.0.0.1:8889/api/wine/' + fields.id, userJson.fields);
-    res.redirect('/edit/' + fields.id);
+
+    var id = fields.id;
+    console.log(id);
+    var name = fields.name;
+    var description = fields.description;
+    var country = fields.country;
+    var region = fields.region;
+    var year = fields.year;
+
+    try {
+      await client.updateByQuery({
+        index: nom_index,
+
+        script: {
+          source: "ctx._source.COUNTRY = params.COUNTRY; ctx._source.YEAR = params.YEAR; ctx._source.DESCRIPTION = params.DESCRIPTION; ctx._source.NAME = params.NAME; ctx._source.REGION = params.REGION; ",
+          lang: "painless",
+            params: {
+            COUNTRY: country,
+            YEAR: year,
+            DESCRIPTION: description,
+            NAME: name,
+            REGION: region,
+
+          }
+        },
+        query: {
+            match: {
+                ID: "" + id + ""
+            }
+        }
+      }).then(function (resp) {
+        console.log("modif reussi", resp);
+      },
+        function (err) {
+            console.log(err.message);
+        });
+      await client.indices.refresh({index: nom_index})
+      res.redirect('/edit/' + fields.id);
+    } catch (error) {
+      res.send('Unable to add data. Check syntax.')
+    }
+
   })
 });
 
