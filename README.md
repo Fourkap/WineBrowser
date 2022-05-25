@@ -1,15 +1,16 @@
 # WineBrowser
 
 WineBrowser est une application développée en Javascript(NodeJs) qui permet la gestion d'une base de données de vins.
-##Architecture
+## Architecture
 ![Architecturewinebrowser](DocImg/Architecturewinebrowser.png)
 Le Back-End(WineBrowser) en NodeJs vient piloter l'ensemble du projet.
 Elle communique via des appels Json au Web service WineWebService (Java Spring). (https://github.com/Fourkap/WineWebService) 
 
 WineBrowser vient également communiquer avec ElasticSearch afin de gérer la partie requêtage sur les vins.
 
-##Application Web
+## Application Web
 L'application web est composée de deux grandes parties:
+
 ![WineBrowserHome](DocImg/WineBrowserHome.png)
 - Une partie pour la gestion des vins (Création, Visionnage, Modification, Suppression)
 - Une partie pour le requêtage et la visualisation des vins via Kibana.
