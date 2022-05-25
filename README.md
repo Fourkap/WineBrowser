@@ -10,6 +10,7 @@ WineBrowser vient également communiquer avec ElasticSearch afin de gérer la pa
 
 ## Application Web
 L'application web est composée de deux grandes parties:
+
 ![WineBrowserHome](DocImg/WineBrowserHome.png)
 - Une partie pour la gestion des vins (Création, Visionnage, Modification, Suppression)
 - Une partie pour le requêtage et la visualisation des vins via Kibana.
